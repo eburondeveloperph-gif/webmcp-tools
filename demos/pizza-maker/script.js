@@ -11,7 +11,7 @@ const sizes = {
   Small: 0.8,
   Medium: 1.0,
   Large: 1.2,
-  'Too Large': 1.8,
+  'Extra Large': 1.8,
 };
 
 const styles = {
@@ -52,7 +52,7 @@ function addTopping(emoji, size = 'Medium', count = 1) {
     const topping = document.createElement('div');
     topping.className = 'topping';
     topping.innerHTML = `<span>${emoji}</span>`;
-    const radius = 180;
+    const radius = 170;
     const angle = Math.random() * Math.PI * 2;
     const dist = Math.random() * radius;
     const x = 165 + dist * Math.cos(angle);
@@ -120,33 +120,13 @@ function sharePizza() {
   const state = getPizzaState();
   const jsonString = JSON.stringify(state);
   // Correctly handle Unicode (emojis) with btoa
-  const base64 = btoa(unescape(encodeURIComponent(jsonString)));
+  const base64 = btoa(encodeURIComponent(jsonString));
 
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   params.set('share', base64);
   url.search = params.toString();
-  const shareUrl = url.toString();
-
-  if (navigator.share) {
-    navigator
-      .share({
-        title: 'My Magic Pizza',
-        text: 'Check out this pizza I made!',
-        url: shareUrl,
-      })
-      .catch(console.error);
-  } else {
-    navigator.clipboard
-      .writeText(shareUrl)
-      .then(() => {
-        alert('Link copied to clipboard!');
-      })
-      .catch(() => {
-        prompt('Copy this link:', shareUrl);
-      });
-  }
-  return shareUrl;
+  return url.toString();
 }
 
 function loadPizzaStateFromURL() {
@@ -187,7 +167,7 @@ if (window.navigator.modelContext) {
     inputSchema: {
       type: 'object',
       properties: {
-        size: { type: 'string', enum: ['Small', 'Medium', 'Large', 'Too Large'] },
+        size: { type: 'string', enum: ['Small', 'Medium', 'Large', 'Extra Large'] },
       },
       required: ['size'],
     },
@@ -246,7 +226,7 @@ if (window.navigator.modelContext) {
           type: 'string',
           enum: ['🍕', '🍄', '🌿', '🍍', '🫑', '🥓', '🧅', '🫒', '🌽', '🌶️'],
         },
-        size: { type: 'string', enum: ['Small', 'Medium', 'Large', 'Too Large'] },
+        size: { type: 'string', enum: ['Small', 'Medium', 'Large', 'Extra Large'] },
         count: {
           type: 'integer',
           minimum: 1,
@@ -256,7 +236,7 @@ if (window.navigator.modelContext) {
       required: ['topping'],
     },
     execute: ({ topping, size, count }) => {
-      const num = count || 1;
+      const num = count || 5;
       addTopping(topping, size, num);
       return `Added ${num} ${topping} topping(s)`;
     },
