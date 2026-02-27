@@ -26,6 +26,8 @@ A curated list of awesome WebMCP demos.
 - [Blackjack Agents](https://webmcp-blackjack.heejae.dev/) - Blackjack game with multiple AI agents (player, opponent, dealer) all using WebMCP tools. Each agent autonomously observes its hand, decides to hit or stand, and repeats until done — driven by tool descriptions alone.
   - [Code](https://github.com/happyhj/webmcp-blackjack)
   - **Example Prompt:** "Play my turn"
+- [WebMCP Bridge](https://h3manth.com/ai/webmcp/) - A bridge that connects any remote MCP server to Chrome's WebMCP API (`navigator.modelContext`), letting browser-based AI agents discover and invoke tools from existing MCP servers.
+  - **Example Prompt:** "Search for TC39 proposals related to decorators"
   
 ## Contributing
 
