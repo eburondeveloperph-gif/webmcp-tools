@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Backend } from "./index.js";
-import { Ollama, Tool as OllamaTool, Message as OllamaMessage } from "ollama";
-import { Message } from "../types/evals.js";
+import { Ollama, Message as OllamaMessage, Tool as OllamaTool } from "ollama";
+import { WebmcpConfig } from "../types/config.js";
+import { Eval, Message, TestResults } from "../types/evals.js";
 import { Tool, ToolCall } from "../types/tools.js";
+import { Backend, RunEvent } from "./index.js";
 
 export class OllamaBackend implements Backend {
   private ollama: Ollama;
@@ -20,7 +21,32 @@ export class OllamaBackend implements Backend {
     this.ollama = new Ollama({ host });
   }
 
-  async execute(messages: [Message]): Promise<ToolCall | null> {
+  async executeLocalEvals(test: Eval): Promise<any> {
+    const toolCall = await this.execute(test.messages);
+    if (toolCall) {
+      return {
+        functionName: toolCall.functionName,
+        args: toolCall.args || {},
+      };
+    } else {
+      return { text: "No tool calls generated." };
+    }
+  }
+
+  executeInBrowserEvals(
+    _tests: Array<Eval>,
+    _tools: Array<Tool>,
+    _config: WebmcpConfig,
+    _onEvent?: (event: RunEvent) => void,
+  ): Promise<TestResults> {
+    throw new Error("Method not implemented.");
+  }
+
+  describe(): string {
+    return `Ollama Backend using model: ${this.model}`;
+  }
+
+  async execute(messages: Message[]): Promise<ToolCall | null> {
     let ollamaTools: Array<OllamaTool> = this.tools.map((t) => {
       return {
         function: {

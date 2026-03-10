@@ -12,7 +12,8 @@ import { SingleBar } from "cli-progress";
 import minimist from "minimist";
 import { Config } from "../types/config.js";
 import { renderReport } from "../report/report.js";
-import { executeEvals } from "../evaluator.js";
+import { executeLocalEvals } from "../evaluator/index.js";
+import { cleanOldReports } from "../utils.js";
 
 dotenv.config();
 
@@ -28,9 +29,7 @@ if (!args.evals) {
 }
 
 if (args.backend && args.backend === "ollama" && !args.model) {
-  console.error(
-    "The 'model' argument is required when 'backend' is set to 'ollama'.",
-  );
+  console.error("The 'model' argument is required when 'backend' is set to 'ollama'.");
   process.exit(1);
 }
 
@@ -38,6 +37,7 @@ const config: Config = {
   toolSchemaFile: args.tools,
   evalsFile: args.evals,
   backend: args.backend || "gemini",
+  provider: args.provider,
   model: args.model || "gemini-2.5-flash",
 };
 
@@ -56,18 +56,20 @@ const tests: Array<Eval> = JSON.parse(
 );
 
 const progressBar = new SingleBar({
-  format:
-    "progress [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} | accuracy: {accuracy}%",
+  format: "progress [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} | accuracy: {accuracy}%",
 });
 
 let passCount = 0;
-const finalResults = await executeEvals(tests, tools, config, (event) => {
-  if (event.type === 'start') {
+let stepCount = 0;
+const finalResults = await executeLocalEvals(tests, tools, config, (event) => {
+  if (event.type === "start") {
+    console.log(event.message);
     progressBar.start(event.total, 0, { accuracy: "0.00" });
-  } else if (event.type === 'progress') {
+  } else if (event.type === "progress") {
+    stepCount++;
     if (event.result.outcome === "pass") passCount++;
-    progressBar.update(event.testNumber, {
-      accuracy: ((passCount / event.testNumber) * 100).toFixed(2),
+    progressBar.update(stepCount, {
+      accuracy: ((passCount / stepCount) * 100).toFixed(2),
     });
   }
 });
@@ -77,6 +79,7 @@ const report = renderReport(config, finalResults);
 
 const reportName = `report-${Date.now()}.html`;
 
+await cleanOldReports();
 await writeFile(reportName, report);
 console.log(`\nReport saved to ${reportName}`);
 process.exit();

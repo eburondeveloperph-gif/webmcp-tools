@@ -12,7 +12,11 @@ A curated list of awesome WebMCP demos.
 - [Le Petit Bistro](https://googlechromelabs.github.io/webmcp-tools/demos/french-bistro/) - A restaurant reservation system that demonstrates how an AI agent can interact with a web-based booking form using declarative tool definitions.
   - **Example Prompt:** "Can you book a table for John Doe for 2 people at Le Petit Bistro next Friday, at 7 PM on the Terrace? His number is 123-456-7890. It's for a birthday celebration."
 - [React Flight Search](https://googlechromelabs.github.io/webmcp-tools/demos/react-flightsearch/) - A React-based flight search application that showcases how a web application can expose structured tools to an AI agent, allowing it to programmatically interact with the UI.
-  - **Example Prompt:** "Search flights from LON to NYC leaving next Monday and returning after a week for 2 passengers.
+  - **Example Prompt:** "Search flights from LON to NYC leaving next Monday and returning after a week for 2 passengers."
+- [WebMCP zaMaker!](https://googlechromelabs.github.io/webmcp-tools/demos/pizza-maker/) - An interactive pizza builder demonstrating imperative tool registration, allowing AI models to make custom pizzas.
+  - **Example Prompt:** "Make me a large BBQ pizza with sauce, pineapple and extra bacon."
+- [Shoe store](https://andreinwald.github.io/webmcp-demo/) | [Code](https://github.com/andreinwald/webmcp-demo) - online store built with React, with all core functionality MCP-ready.
+  - **Example Prompt:** "Suggest the 3 best pairs of soccer shoes (foot size 45) available on this site. Add (one of suggestions) to cart and complete purchase."
 - [Flight booking](https://webmcp-flight-demo.netlify.app/) / [Flight booking (declarative)](https://webmcp-flight-demo.netlify.app/declarative.html) - Find the best flights for your journey.
   - **Example Prompt:** "I want to book a flight from New York to Los Angeles for two people on next Thursday."
 - [Animal Viewer](https://65s6dw.csb.app/) - A simple codesandbox demo page that shows either a dog or a cat image.
@@ -23,7 +27,17 @@ A curated list of awesome WebMCP demos.
   - [Article](https://medium.com/data-science-collective/moving-beyond-screen-scraping-creating-an-agent-native-web-app-with-webmcp-4818552e1e11) | [Code](https://github.com/hugozanini/air-bird-booking-web-mcp)
 - [AI Audit](https://audit.wordlift.io/) - Audit any website's readiness for the agentic web. Exposes a `run-audit` tool via `navigator.modelContext` that lets an AI agent programmatically trigger a full AI readiness analysis (score 0–100) covering site files, SEO, structured data, content, and more.
   - **Example Prompt:** "Run an AI readiness audit on https://example.com"
-
+- [Blackjack Agents](https://webmcp-blackjack.heejae.dev/) - Blackjack game with multiple AI agents (player, opponent, dealer) all using WebMCP tools. Each agent autonomously observes its hand, decides to hit or stand, and repeats until done — driven by tool descriptions alone.
+  - [Code](https://github.com/happyhj/webmcp-blackjack)
+  - **Example Prompt:** "Play my turn"
+- [WebMCP Bridge](https://h3manth.com/ai/webmcp/) - A bridge that connects any remote MCP server to Chrome's WebMCP API (`navigator.modelContext`), letting browser-based AI agents discover and invoke tools from existing MCP servers.
+  - **Example Prompt:** "Search for TC39 proposals related to decorators"
+- [WebMCP × Excalidraw x WebAI](https://shidh.in/demo/webmcp-excalidraw/) - A Web app that converts natural language descriptions into Excalidraw diagrams through a 3-tool WebMCP pipeline (generate_mermaid → validate_mermaid → render_excalidraw), with optional on-device generation using Chrome's built-in AI.
+  - **Example Prompt**: "Create a flowchart showing the user login flow with error handling"
+- [WebMCP Flow](https://webmcp-flow.vercel.app/) - An AI-controllable architecture diagram builder that lets an AI agent create nodes, connect them with edges, and apply auto-layout in real time via WebMCP tools.
+  - [Code](https://github.com/ttimur-dev/webmcp-flow)
+  - **Example Prompt:** "Draw a typical web application architecture with authentication: browser client, API Gateway, Auth Service, User Service, PostgreSQL, Redis. Connect them with edges labeled by protocol and apply auto layout."
+  
 ## Contributing
 
 Contributions are welcome! Please read the [contribution guidelines](CONTRIBUTING.md) first.

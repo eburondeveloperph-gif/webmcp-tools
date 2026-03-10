@@ -7,12 +7,16 @@ export type Config = {
   toolSchemaFile: string;
   evalsFile: string;
   backend: string;
+  provider?: string;
   model: string;
+  debug?: boolean;
 };
 
 export type WebmcpConfig = {
   url: string;
   evalsFile: string;
   backend: string;
+  provider?: string;
   model: string;
+  debug?: boolean;
 };

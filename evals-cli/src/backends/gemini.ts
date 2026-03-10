@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Backend } from "./index.js";
-import { Tool, ToolCall } from "../types/tools.js";
 import { Content, FunctionDeclaration, GoogleGenAI } from "@google/genai";
-import { Message } from "../types/evals.js";
+import { WebmcpConfig } from "../types/config.js";
+import { Eval, Message, TestResults } from "../types/evals.js";
+import { Tool, ToolCall } from "../types/tools.js";
+import { Backend, RunEvent } from "./index.js";
 
-export class GoogleAiBackend implements Backend {
+export class GeminiBackend implements Backend {
   private googleGenAI: GoogleGenAI;
 
   constructor(
@@ -20,16 +21,39 @@ export class GoogleAiBackend implements Backend {
     this.googleGenAI = new GoogleGenAI({ apiKey });
   }
 
-  async execute(messages: [Message]): Promise<ToolCall | null> {
-    const functionDeclarations: Array<FunctionDeclaration> = this.tools.map(
-      (t) => {
-        return {
-          name: t.functionName,
-          description: t.description,
-          parametersJsonSchema: t.parameters,
-        };
-      },
-    );
+  async executeLocalEvals(test: Eval): Promise<any> {
+    const toolCall = await this.execute(test.messages);
+    if (toolCall) {
+      return {
+        functionName: toolCall.functionName,
+        args: toolCall.args || {},
+      };
+    } else {
+      return { text: "No tool calls generated." };
+    }
+  }
+
+  executeInBrowserEvals(
+    _tests: Array<Eval>,
+    _tools: Array<Tool>,
+    _config: WebmcpConfig,
+    _onEvent?: (event: RunEvent) => void,
+  ): Promise<TestResults> {
+    throw new Error("Method not implemented.");
+  }
+
+  describe(): string {
+    return `Gemini Backend using model: ${this.model}`;
+  }
+
+  async execute(messages: Message[]): Promise<ToolCall | null> {
+    const functionDeclarations: Array<FunctionDeclaration> = this.tools.map((t) => {
+      return {
+        name: t.functionName,
+        description: t.description,
+        parametersJsonSchema: t.parameters,
+      };
+    });
 
     const contents: Array<Content> = messages.map((m) => {
       switch (m.type) {
@@ -46,7 +70,7 @@ export class GoogleAiBackend implements Backend {
               {
                 functionCall: {
                   name: m.name,
-                  arguments: m.arguments,
+                  args: m.arguments as Record<string, unknown>,
                 },
               },
             ],
@@ -77,6 +101,7 @@ export class GoogleAiBackend implements Backend {
     };
 
     const response = await this.googleGenAI.models.generateContent(request);
+
     if (!response.functionCalls) {
       return null;
     }
